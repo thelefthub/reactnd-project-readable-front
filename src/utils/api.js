@@ -13,7 +13,7 @@ export const getCategories = () => fetch(`${api}/categories`, { headers })
 // get all posts
 export const getPosts = () => fetch(`${api}/posts`, { headers })
   .then(res => res.json())
-  .then(data => data.posts);
+  // .then(data => data.posts);
 
 // get all posts for a given category
 export const getPostsPerCategory = (category) => fetch(`${api}/${category}/posts`, { headers })

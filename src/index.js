@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import '../node_modules/font-awesome/css/font-awesome.min.css';
 import { createStore, applyMiddleware, compose } from 'redux'
 import reducer from './reducers'
 import { Provider } from 'react-redux'
@@ -31,9 +32,18 @@ const store = createStore(
   )
 )
 
+// ReactDOM.render(
+//   <BrowserRouter>
+//     <Provider store={store}>
+//     <App />
+//     </Provider>
+//   </BrowserRouter>, document.getElementById('root'));
+
+//https://stackoverflow.com/questions/45746577/react-router-link-changes-url-but-doesnt-rerender
 ReactDOM.render(
+  <Provider store={store}>
   <BrowserRouter>
-    <Provider store={store}>
-    <App />
+    <Route component={App} />
+  </BrowserRouter>
     </Provider>
-  </BrowserRouter>, document.getElementById('root'));
+  , document.getElementById('root'));

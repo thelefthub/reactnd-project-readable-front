@@ -15,7 +15,7 @@ export function categories (state = initialCategoryState, action) {
 
   switch (action.type) {
     case LOAD_CAT :
-      return [ //new state object containing recipes?
+      return [ 
         ...state,
         ...action.categories
       ]
