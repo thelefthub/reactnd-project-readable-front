@@ -11,16 +11,50 @@ import sortBy from 'sort-by';
 class ListPosts extends Component {
 
   state = {
-    sortChoice: ''
+    sortChoice: '',
+    viewChoice: '',
+    // posts:[]
   }
 
-  // componentDidMount() {
-  //
-  //
-  //
-  //
-  //
-  // }
+  componentDidMount() {
+    //set state according to view preference
+    console.log('link:', this.props.match);
+    let param = 'home';
+    switch (this.props.match.params.name) {
+      case 'react':
+        param = this.props.match.params.name;
+        break;
+      case 'redux':
+        param = this.props.match.params.name;
+        break;
+      case 'udacity':
+        param = this.props.match.params.name;
+        break;
+    }
+    this.setState({ viewChoice: param }, () => {
+      console.log('after updates ', this.state.viewChoice);
+      // let filtered;
+      // if (param === 'home') {
+      //   filtered = this.props.posts;
+      //   console.log(this.props);
+      // } else {
+      //   filtered = this.props.posts.filter(post => post.category === param);
+      // }
+      //
+      // this.setState(() => ({ posts: filtered }))
+    });
+
+
+  }
+
+  //set state according to view preference (when clicking link)
+  onViewChoice = (choice) => {
+    this.setState({ viewChoice: choice }, () => {
+      console.log('after link ', this.state.viewChoice);
+      // let filtered = this.props.posts.filter(post => post.category === choice);
+      // this.setState(() => ({ posts: filtered }))
+    });
+  }
 
   // //order posts on user preference
   // onSort2 = (e) => {
@@ -38,9 +72,14 @@ class ListPosts extends Component {
     // console.log('sorted ', this.props.posts);
   }
 
+
+
   render() {
     const { sortChoice } = this.state
     const { categories, posts } = this.props
+
+    console.log('rendering ', this.state.viewChoice);
+
 
     return (
       <div className='container-fluid'>
@@ -51,9 +90,9 @@ class ListPosts extends Component {
               <ol className='list-group'>
                 {
                   this.props.categories.map((cat) => (
-                  <li key={cat.name} className='list-group-item'>
+                  <li key={cat.name} className={'list-group-item ' + (this.state.viewChoice === cat.name ? 'list-group-item-secondary' : '')}>
 
-                    <Link to={`/category/${cat.name}`}>{cat.name}</Link>
+                    <Link to={`/category/${cat.name}`} onClick={(e) => this.onViewChoice(cat.name)}>{cat.name}</Link>
                 </li>
                 ))
               }
@@ -84,6 +123,29 @@ class ListPosts extends Component {
               </thead>
               <tbody>
                 {
+
+
+              //     this.props.posts.reduce(function(filtered, curVal) {
+              //     if (curVal.category === this.state.viewChoice) { //this is undefined?????
+              //        filtered.push(curVal);
+              //        console.log('filter', curVal.category)
+              //     }
+              //     return filtered;
+              //   }, []).map((post) => (
+              //     <tr key={post.id}>
+              //       <th scope='row'>{post.id}</th>
+              //       <td>{formatDate(post.timestamp)}</td>
+              //       <td>{post.title}</td>
+              //       <td>@{post.author}</td>
+              //     </tr>
+              // ))
+
+              //?:
+
+              
+
+
+
                   this.props.posts.map((post) => (
                     <tr key={post.id}>
                       <th scope='row'>{post.id}</th>

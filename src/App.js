@@ -29,7 +29,7 @@ class App extends Component {
 
     //get available posts
     Api.getPosts().then((posts) => {
-      // console.log('posts: ', posts);
+      // console.log('posts: ', jposts);
       this.props.loadPosts(posts);
     });
 
@@ -38,17 +38,18 @@ class App extends Component {
 
 
   render() {
+
     return (
       <div className="App">
-        <Route exact path="/" render={() => (
+        <Route exact path="/" render={(props) => (
           <ListPosts
             categories={this.props.categories}
             posts={this.props.posts}
-
+            {...props}
             />
           )}/>
         <Route path="/category/:name" render={(props) => (
-          <Category
+          <ListPosts
             categories={this.props.categories}
             posts={this.props.posts}
             {...props}
