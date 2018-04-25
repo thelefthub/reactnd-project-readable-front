@@ -142,11 +142,8 @@ class ListPosts extends Component {
 
               //?:
 
-              
-
-
-
-                  this.props.posts.map((post) => (
+              this.state.viewChoice === 'home' ? (
+                this.props.posts.map((post) => (
                     <tr key={post.id}>
                       <th scope='row'>{post.id}</th>
                       <td>{formatDate(post.timestamp)}</td>
@@ -154,6 +151,29 @@ class ListPosts extends Component {
                       <td>@{post.author}</td>
                     </tr>
                 ))
+              ) : (
+                this.props.posts.filter((posted) => (
+                  posted.category === this.state.viewChoice))
+                .map((post) => (
+                    <tr key={post.id}>
+                      <th scope='row'>{post.id}</th>
+                      <td>{formatDate(post.timestamp)}</td>
+                      <td>{post.title}</td>
+                      <td>@{post.author}</td>
+                    </tr>
+                ))
+              )
+
+
+
+                  /* this.props.posts.map((post) => (
+                    <tr key={post.id}>
+                      <th scope='row'>{post.id}</th>
+                      <td>{formatDate(post.timestamp)}</td>
+                      <td>{post.title}</td>
+                      <td>@{post.author}</td>
+                    </tr>
+                )) */
               }
               </tbody>
             </table>
