@@ -4,6 +4,7 @@ import './App.css';
 import { Route } from 'react-router-dom';
 import ListPosts from './components/listPosts';
 import Category from './components/category';
+import CreatePost from './components/createPost';
 import * as Api from './utils/api'
 import { connect } from 'react-redux'
 import { loadCategories, loadPosts } from './actions'
@@ -36,6 +37,18 @@ class App extends Component {
 
   }
 
+  createPost(id, timestamp, title, body, author, category) {
+    console.log('onCreate' , id, timestamp, title, body, author, category);
+    Api.addPost(id, timestamp, title, body, author, category).then((res) => {
+      console.log('res ',res);
+      
+      // this.props.loadPosts(posts);
+    }).catch((err) => {
+      console.log('error when persisting post');
+    });
+    
+  }
+
 
   render() {
 
@@ -56,6 +69,15 @@ class App extends Component {
 
             />
           )}/>
+        <Route path='/addpost' render={({ history }) => (
+        <CreatePost
+          categories={this.props.categories}
+          onCreatePost={(id, timestamp, title, body, author, category) => {
+            this.createPost(id, timestamp, title, body, author, category)
+            history.push('/')
+          }}
+        />
+      )}/>
 
       </div>
     );

@@ -51,3 +51,8 @@
   margin: auto;
   /* padding-left: 10px; */
 }
+
+.label-align {
+  /* text-align: left; */
+  float: left;
+}

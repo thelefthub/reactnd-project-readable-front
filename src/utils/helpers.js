@@ -8,3 +8,14 @@ export const formatDate = (timestamp) => {
   const sec = "0" + dt.getSeconds()
   return `${year}-${month.substr(-2)}-${day.substr(-2)} ${hour.substr(-2)}:${min.substr(-2)}:${sec.substr(-2)}`
 }
+
+
+export const generateId = () => {
+  var id = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < 20; i++)
+    id += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return id;
+}

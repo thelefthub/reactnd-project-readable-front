@@ -33,15 +33,6 @@ class ListPosts extends Component {
     }
     this.setState({ viewChoice: param }, () => {
       console.log('after updates ', this.state.viewChoice);
-      // let filtered;
-      // if (param === 'home') {
-      //   filtered = this.props.posts;
-      //   console.log(this.props);
-      // } else {
-      //   filtered = this.props.posts.filter(post => post.category === param);
-      // }
-      //
-      // this.setState(() => ({ posts: filtered }))
     });
 
 
@@ -72,14 +63,9 @@ class ListPosts extends Component {
     // console.log('sorted ', this.props.posts);
   }
 
-
-
   render() {
-    const { sortChoice } = this.state
+    const { sortChoice, viewChoice } = this.state
     const { categories, posts } = this.props
-
-    console.log('rendering ', this.state.viewChoice);
-
 
     return (
       <div className='container-fluid'>
@@ -123,26 +109,26 @@ class ListPosts extends Component {
               </thead>
               <tbody>
                 {
+                  this.props.posts.reduce((filtered, curVal) =>{
+                   if (curVal.category === viewChoice) {
+                      filtered.push(curVal);
+                  }
+                   if (viewChoice === 'home'){
+                     filtered.push(curVal);
+                   }
+                   return filtered;
+                 }, []).map((post) => (
+                   <tr key={post.id}>
+                     <th scope='row'>{post.id}</th>
+                     <td>{formatDate(post.timestamp)}</td>
+                     <td>{post.title}</td>
+                     <td>@{post.author}</td>
+                   </tr>
+               ))
 
+              
 
-              //     this.props.posts.reduce(function(filtered, curVal) {
-              //     if (curVal.category === this.state.viewChoice) { //this is undefined?????
-              //        filtered.push(curVal);
-              //        console.log('filter', curVal.category)
-              //     }
-              //     return filtered;
-              //   }, []).map((post) => (
-              //     <tr key={post.id}>
-              //       <th scope='row'>{post.id}</th>
-              //       <td>{formatDate(post.timestamp)}</td>
-              //       <td>{post.title}</td>
-              //       <td>@{post.author}</td>
-              //     </tr>
-              // ))
-
-              //?:
-
-              this.state.viewChoice === 'home' ? (
+              /* this.state.viewChoice === 'home' ? (
                 this.props.posts.map((post) => (
                     <tr key={post.id}>
                       <th scope='row'>{post.id}</th>
@@ -162,7 +148,7 @@ class ListPosts extends Component {
                       <td>@{post.author}</td>
                     </tr>
                 ))
-              )
+              ) */
 
 
 

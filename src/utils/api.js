@@ -25,6 +25,7 @@ export const getPost = (id) => fetch(`${api}/posts/${id}`, { headers })
 
 // add a new post
 export const addPost = (id, timestamp, title, body, author, category) =>
+
   fetch(`${api}/posts`, {
     method: "POST",
     headers,
@@ -36,7 +37,7 @@ export const addPost = (id, timestamp, title, body, author, category) =>
       author,
       category
     })
-  })
+  }).then(res => res.json());
 
 // update an existing post
 export const updatePost = (id, title, body) =>
