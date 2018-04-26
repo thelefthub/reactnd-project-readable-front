@@ -119,10 +119,10 @@ class ListPosts extends Component {
                    return filtered;
                  }, []).map((post) => (
                    <tr key={post.id}>
-                     <th scope='row'>{post.id}</th>
+                     <th scope='row'><Link to={`/posts/${post.id}`}>{post.id}</Link></th>
                      <td>{formatDate(post.timestamp)}</td>
                      <td>{post.title}</td>
-                     <td>@{post.author}</td>
+                     <td>{post.author}</td>
                    </tr>
                ))
 

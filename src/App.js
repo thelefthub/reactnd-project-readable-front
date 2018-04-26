@@ -5,10 +5,11 @@ import { Route } from 'react-router-dom';
 import ListPosts from './components/listPosts';
 import Category from './components/category';
 import CreatePost from './components/createPost';
-import * as Api from './utils/api'
-import { connect } from 'react-redux'
-import { loadCategories, loadPosts } from './actions'
-import { bindActionCreators } from "redux"
+import PostDetail from './components/postDetail';
+import * as Api from './utils/api';
+import { connect } from 'react-redux';
+import { loadCategories, loadPosts, addPost } from './actions';
+import { bindActionCreators } from "redux";
 
 class App extends Component {
 
@@ -39,10 +40,10 @@ class App extends Component {
 
   createPost(id, timestamp, title, body, author, category) {
     console.log('onCreate' , id, timestamp, title, body, author, category);
-    Api.addPost(id, timestamp, title, body, author, category).then((res) => {
-      console.log('res ',res);
-      
-      // this.props.loadPosts(posts);
+    // Api.test(id, timestamp, title, body, author, category);
+    Api.addPost(id, timestamp, title, body, author, category).then((post) => {
+      // console.log('res ',post);
+      this.props.addPost(post);
     }).catch((err) => {
       console.log('error when persisting post');
     });
@@ -76,8 +77,16 @@ class App extends Component {
             this.createPost(id, timestamp, title, body, author, category)
             history.push('/')
           }}
-        />
-      )}/>
+          />
+        )}/>
+        <Route path="/posts/:id" render={(props) => (
+          <PostDetail
+            categories={this.props.categories}
+            posts={this.props.posts}
+            {...props}
+
+            />
+          )}/>
 
       </div>
     );
@@ -95,7 +104,9 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => (
   bindActionCreators({
     loadCategories,
-    loadPosts
+    loadPosts,
+    addPost
+
   }, dispatch)
 )
 

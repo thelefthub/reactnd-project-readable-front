@@ -1,7 +1,7 @@
 const api = 'http://localhost:3001';
 
 const headers = {
-  'Accept': 'application/json',
+  'Content-Type': 'application/json',
   'Authorization': 'something'
 };
 
@@ -25,19 +25,19 @@ export const getPost = (id) => fetch(`${api}/posts/${id}`, { headers })
 
 // add a new post
 export const addPost = (id, timestamp, title, body, author, category) =>
-
   fetch(`${api}/posts`, {
     method: "POST",
     headers,
     body: JSON.stringify({
-      id,
-      timestamp,
-      title,
-      body,
-      author,
-      category
+      id: id,
+      timestamp: timestamp ,
+      title: title,
+      body: body,
+      author: author,
+      category: category
     })
-  }).then(res => res.json());
+  }).then(res => res.json()
+);
 
 // update an existing post
 export const updatePost = (id, title, body) =>

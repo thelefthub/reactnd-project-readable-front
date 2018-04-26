@@ -1,5 +1,6 @@
 import {
   LOAD_POST,
+  ADD_POST,
 
 } from '../actions'
 
@@ -15,8 +16,15 @@ export function posts (state = initialPostState, action) {
         ...state,
         ...action.posts
       ]
+    case ADD_POST :
+    return [
+      ...state,
+      action.post
+    ]
     default :
       return state
   }
 
 }
+
+
