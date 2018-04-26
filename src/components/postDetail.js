@@ -57,7 +57,7 @@ class PostDetail extends Component {
                     <label htmlFor="txtArea" className='label-align'>Post</label>
                     <textarea className='form-control' id="txtArea" rows="4" name="body"></textarea>
                 </div>
-                <button type="submit" className='btn btn-primary'>Submit</button>
+                <button type="submit" className='btn btn-primary'>Change</button>
             </form>
             </div>
             )
