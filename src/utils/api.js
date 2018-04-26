@@ -30,7 +30,7 @@ export const addPost = (id, timestamp, title, body, author, category) =>
     headers,
     body: JSON.stringify({
       id: id,
-      timestamp: timestamp ,
+      timestamp: timestamp,
       title: title,
       body: body,
       author: author,

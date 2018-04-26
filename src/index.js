@@ -9,6 +9,7 @@ import '../node_modules/font-awesome/css/font-awesome.min.css';
 import { createStore, applyMiddleware, compose } from 'redux'
 import reducer from './reducers'
 import { Provider } from 'react-redux'
+import '../node_modules/react-bootstrap-modal/lib/css/rbm-patch.css';
 
 //logger middleware
 // also possible to use redux-logger: npm install --save redux-logger

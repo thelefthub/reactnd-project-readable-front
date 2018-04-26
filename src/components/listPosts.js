@@ -109,11 +109,11 @@ class ListPosts extends Component {
               </thead>
               <tbody>
                 {
-                  this.props.posts.reduce((filtered, curVal) =>{
+                  this.props.posts.reduce((filtered, curVal) => {
                    if (curVal.category === viewChoice) {
                       filtered.push(curVal);
                   }
-                   if (viewChoice === 'home'){
+                   if (viewChoice === 'home') {
                      filtered.push(curVal);
                    }
                    return filtered;

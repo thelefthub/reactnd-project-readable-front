@@ -45,7 +45,7 @@ class App extends Component {
       // console.log('res ',post);
       this.props.addPost(post);
     }).catch((err) => {
-      console.log('error when persisting post');
+      console.log('error when persisting post: ', err);
     });
     
   }
@@ -81,7 +81,6 @@ class App extends Component {
         )}/>
         <Route path="/posts/:id" render={(props) => (
           <PostDetail
-            categories={this.props.categories}
             posts={this.props.posts}
             {...props}
 

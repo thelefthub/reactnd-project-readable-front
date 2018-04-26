@@ -34,7 +34,7 @@ class CreatePost extends Component {
       }
 
     render() {
-        return(
+        return (
             <div className='container'>
             <h2>Create Post</h2>
             <form onSubmit={this.handleSubmit}>
@@ -48,7 +48,7 @@ class CreatePost extends Component {
                 </div>
                 <div className='form-group'>
                     <label htmlFor='orderSelect' className='label-align'>Category</label>
-                    <select  id='orderSelect' className='form-control' name="category">
+                    <select id='orderSelect' className='form-control' name="category">
                     {
                         this.props.categories.map((cat) => (
                             <option value={cat.name} key={cat.name}>{cat.name}</option>
@@ -60,7 +60,7 @@ class CreatePost extends Component {
                     <label htmlFor="txtArea" className='label-align'>Post</label>
                     <textarea className='form-control' id="txtArea" rows="4" name="body"></textarea>
                 </div>
-                <button type="submit" className='btn btn-primary'>Submit</button>
+                <button type="submit" className={'label-align ' + 'btn btn-primary'}>Submit</button>
             </form>
             </div>
             
