@@ -22,6 +22,7 @@ export const getPostsPerCategory = (category) => fetch(`${api}/${category}/posts
 
 // get a specific post
 export const getPost = (id) => fetch(`${api}/posts/${id}`, { headers })
+  .then(res => res.json())
 
 // add a new post
 export const addPost = (id, timestamp, title, body, author, category) =>
@@ -45,7 +46,8 @@ export const updatePost = (id, title, body) =>
     method: "PUT",
     headers,
     body: JSON.stringify({title, body})
-  })
+  }).then(res => res.json()
+);
 
 // delete an existing post
 export const deletePost = (id) => fetch(`${api}/posts/${id}`, {
@@ -73,7 +75,8 @@ export const addComment = (id, timestamp, body, author, parentId) =>
     method: "POST",
     headers,
     body: JSON.stringify({id, timestamp, body, author, parentId})
-  })
+  }).then(res => res.json()
+);
 
 // edit an existing comment
 export const updateComment = (id, timestamp, body) =>

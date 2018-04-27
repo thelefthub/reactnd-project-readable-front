@@ -61,6 +61,11 @@
 
 .btn-custom {
   width: 140px;
+  margin-bottom: 10px;
+}
+
+h4 {
+  clear: both;
 }
 .modal-post {
   position: absolute;

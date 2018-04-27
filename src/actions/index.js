@@ -1,6 +1,7 @@
 export const LOAD_CAT = 'LOAD_CAT';
 export const LOAD_POST = 'LOAD_POST';
 export const ADD_POST = 'ADD_POST';
+export const LOAD_SINGLE_POST = 'LOAD_SINGLE_POST';
 
 // action creators: JavaScript objects that you set up to describe any event
 // in your application that should update your application’s state
@@ -28,4 +29,14 @@ export function addPost (post) {
     type: ADD_POST,
     post
   }
+}
+
+//load a single post
+export function loadSinglePost (id) {
+
+  return {
+    type: LOAD_SINGLE_POST,
+    id
+  }
+
 }

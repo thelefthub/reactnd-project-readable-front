@@ -8,7 +8,7 @@ import CreatePost from './components/createPost';
 import PostDetail from './components/postDetail';
 import * as Api from './utils/api';
 import { connect } from 'react-redux';
-import { loadCategories, loadPosts, addPost } from './actions';
+import { loadCategories, loadPosts, addPost, loadSinglePost } from './actions';
 import { bindActionCreators } from "redux";
 
 class App extends Component {
@@ -81,7 +81,6 @@ class App extends Component {
         )}/>
         <Route path="/posts/:id" render={(props) => (
           <PostDetail
-            posts={this.props.posts}
             {...props}
 
             />
@@ -104,7 +103,8 @@ const mapDispatchToProps = (dispatch, ownProps) => (
   bindActionCreators({
     loadCategories,
     loadPosts,
-    addPost
+    addPost,
+    loadSinglePost
 
   }, dispatch)
 )

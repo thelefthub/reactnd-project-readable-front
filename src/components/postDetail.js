@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import '../App.css';
 import serializeForm from 'form-serialize';
-import { formatDate } from '../utils/helpers';
+import { formatDate, generateId } from '../utils/helpers';
 import Modal from 'react-modal';
+import * as Api from '../utils/api';
 
 
 class PostDetail extends Component {
@@ -21,9 +22,22 @@ class PostDetail extends Component {
       }
 
       componentDidMount() {
-        let post = this.props.posts.filter((post) => post.id === this.props.match.params.id);
-        this.setState({post: post[0]})
-        console.log(post[0]);
+
+        //get available posts
+        Api.getPost(this.props.match.params.id).then((post) => {
+            this.setState({post: post});
+            // console.log('post', post);
+        });
+
+        let post = this.props.loadSinglePost(this.props.match.params.id);
+        // console.log('state: ', Store.getState());
+        // console.log('props: ', this.props);
+        
+
+
+        // let post = this.props.posts.filter((post) => post.id === this.props.match.params.id);
+        // this.setState({post: post[0]})
+        // console.log(post[0]);
         // Modal.setAppElement('#root');
       }
 
@@ -45,8 +59,11 @@ class PostDetail extends Component {
         }))
       }
 
-      getParent = () => {
-        return document.querySelector('#root');
+      handleCommentSubmit = (e) => {
+        // addComment = (id, timestamp, body, author, parentId)
+        this.setState(() => ({
+            commentModalOpen: false
+        }))
       }
     
     
@@ -98,6 +115,7 @@ class PostDetail extends Component {
                 <button className={'label-align ' + 'btn btn-primary' + ' btn-custom'} onClick={() => this.openCommentModal()}>Add Comment</button>
                 <button className={'label-align ' + 'btn btn-primary' + ' btn-custom'} onClick={() => this.openCommentModal()}>Vote</button>
             </form>
+            <h4>Comments</h4>
             <Modal
                 className='modal-post'
                 overlayClassName='overlay'
@@ -106,10 +124,35 @@ class PostDetail extends Component {
                 contentLabel='comment label'
                 >
                 <div>
-                <p>Hallo aan de modal</p>
+                <h2>Add comment</h2>
+                <form onSubmit={this.handleCommentSubmit}>
+                    <div className='form-group'>
+                        <label htmlFor="commentAuthor" className='label-align'>Author</label>
+                        <input type='text' name='commentAuthor' className='form-control'/>
+                    </div>
+                    <div className='form-group'>
+                    <label htmlFor="commentArea" className='label-align'>Post</label>
+                    <textarea className='form-control' id="commentArea" rows="4" name="commentArea"></textarea>
+                    </div>
+                    <button type="submit" className={'label-align ' + 'btn btn-primary' + ' btn-custom'}>Submit</button>
+                </form>
+                
                 </div>
             </Modal>
-                
+            
+            <table className='table'>
+            
+              <thead>
+                <tr>
+                  <th scope='col'>id</th>
+                  <th scope='col'>timestamp</th>
+                  <th scope='col'>author</th>
+                  <th scope='col'>comment</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
             
                        
             </div>
