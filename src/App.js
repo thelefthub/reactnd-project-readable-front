@@ -8,7 +8,7 @@ import CreatePost from './components/createPost';
 import PostDetail from './components/postDetail';
 import * as Api from './utils/api';
 import { connect } from 'react-redux';
-import { loadCategories, loadPosts, addPost, loadSinglePost } from './actions';
+import { loadCategories, loadPosts, addPost } from './actions';
 import { bindActionCreators } from "redux";
 
 class App extends Component {
@@ -23,17 +23,18 @@ class App extends Component {
 
     //get available categories
     Api.getCategories().then((categories) => {
-      // this.setState({categories});
-      // console.log(categories);
       this.props.loadCategories(categories);
-      // console.log('my cats ', this.props.categories);
     });
 
     //get available posts
     Api.getPosts().then((posts) => {
-      // console.log('posts: ', jposts);
       this.props.loadPosts(posts);
     });
+
+    // //get available comments
+    // Api.getComments().then((comments) => {
+    //   this.props.loadComments(comments);
+    // });
 
 
   }
@@ -82,7 +83,6 @@ class App extends Component {
         <Route path="/posts/:id" render={(props) => (
           <PostDetail
             {...props}
-
             />
           )}/>
 
@@ -95,7 +95,6 @@ const mapStateToProps = (state, ownProps) => {
   return {
     categories: state.categories,
     posts: state.posts,
-
   }
 }
 
@@ -103,8 +102,7 @@ const mapDispatchToProps = (dispatch, ownProps) => (
   bindActionCreators({
     loadCategories,
     loadPosts,
-    addPost,
-    loadSinglePost
+    addPost
 
   }, dispatch)
 )

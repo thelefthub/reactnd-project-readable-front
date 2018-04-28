@@ -65,9 +65,13 @@ export const castPostVote = (id, option) =>
 
 // get all comments for a single post
 export const getComments = (id) => fetch(`${api}/posts/${id}/comments`, { headers })
+.then(res => res.json()
+);
 
 // get a specific comment
 export const getComment = (id) => fetch(`${api}/comments/${id}`, { headers })
+.then(res => res.json()
+);
 
 // add a comment to a post
 export const addComment = (id, timestamp, body, author, parentId) =>
@@ -84,7 +88,8 @@ export const updateComment = (id, timestamp, body) =>
     method: "PUT",
     headers,
     body: JSON.stringify({timestamp, body})
-  })
+  }).then(res => res.json()
+);
 
 // deleta an existing comment
 export const deleteComment = (id) =>

@@ -2,6 +2,7 @@ import {
   LOAD_POST,
   ADD_POST,
   LOAD_SINGLE_POST,
+  UPDATE_POST,
 
 } from '../actions'
 
@@ -22,8 +23,14 @@ export function posts (state = initialPostState, action) {
       ...state,
       action.post
     ]
-    // case LOAD_SINGLE_POST :
-    // return [...state.filter((post) => post.id === action.id)]
+    case LOAD_SINGLE_POST :
+    return [...state.filter((post) => post.id !== action.post.id),
+    action.post
+    ]
+    case UPDATE_POST :
+    return [...state.filter((post) => post.id !== action.post.id),
+    action.post
+    ]
     default :
       return state
   }

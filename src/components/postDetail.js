@@ -6,6 +6,9 @@ import serializeForm from 'form-serialize';
 import { formatDate, generateId } from '../utils/helpers';
 import Modal from 'react-modal';
 import * as Api from '../utils/api';
+import { loadSinglePost, updatePost, loadComments, addComment } from '../actions';
+import { bindActionCreators } from "redux";
+import { connect } from 'react-redux';
 
 
 class PostDetail extends Component {
@@ -23,18 +26,25 @@ class PostDetail extends Component {
 
       componentDidMount() {
 
-        //get available posts
+        // get available posts
         Api.getPost(this.props.match.params.id).then((post) => {
-            this.setState({post: post});
-            // console.log('post', post);
+            // this.setState({post: post});
+            // console.log('props', this.props);
+            this.props.loadSinglePost(post);
         });
 
-        let post = this.props.loadSinglePost(this.props.match.params.id);
+        // get available comments
+        Api.getComments(this.props.match.params.id).then((comments) => {
+        this.props.loadComments(comments, this.props.match.params.id);
+        // console.log('comments ', this.props.comments);
+        });
+
+        
+
+        // let post = this.props.loadSinglePost(this.props.match.params.id);
         // console.log('state: ', Store.getState());
         // console.log('props: ', this.props);
         
-
-
         // let post = this.props.posts.filter((post) => post.id === this.props.match.params.id);
         // this.setState({post: post[0]})
         // console.log(post[0]);
@@ -44,6 +54,13 @@ class PostDetail extends Component {
       handleSubmit = (e) => {
         e.preventDefault()
         const values = serializeForm(e.target, { hash: true })
+        Api.updatePost(this.props.match.params.id, values.title, values.body).then((post) => {
+            this.props.updatePost(post);
+
+        });
+
+        
+        
         // if (this.props.onCreatePost)
         //   this.props.onCreatePost(generateId(), Date.now(), values.title, values.body, values.author, values.category);
       }
@@ -61,15 +78,19 @@ class PostDetail extends Component {
 
       handleCommentSubmit = (e) => {
         // addComment = (id, timestamp, body, author, parentId)
-        this.setState(() => ({
-            commentModalOpen: false
-        }))
+        e.preventDefault()
+        const values = serializeForm(e.target, { hash: true })
+        Api.addComment(generateId(), Date.now(), values.commentArea, values.commentAuthor, this.props.match.params.id).then((comment) => {
+            this.props.addComment(comment);
+            this.setState({commentModalOpen : false});
+            });
       }
     
     
     render() {
 
-        const { post, commentModalOpen } = this.state;
+        const { commentModalOpen } = this.state;
+        const { post, comments } = this.props;
 
         // Modal.setAppElement('#root');
 
@@ -148,9 +169,21 @@ class PostDetail extends Component {
                   <th scope='col'>timestamp</th>
                   <th scope='col'>author</th>
                   <th scope='col'>comment</th>
+                  <th scope='col'>score</th>
                 </tr>
               </thead>
               <tbody>
+              {
+                  comments.map((comment) =>(
+                    <tr key={comment.id}>
+                      <th scope='row'>{comment.id}</th>
+                      <td>{formatDate(comment.timestamp)}</td>
+                      <td>{comment.author}</td>
+                      <td>{comment.body}</td>
+                      <td>{comment.voteScore}</td>
+                    </tr>
+                  ))
+              }
               </tbody>
             </table>
             
@@ -160,5 +193,29 @@ class PostDetail extends Component {
     }
 }
 
-export default PostDetail;
+const mapStateToProps = (state, ownProps) => {
+    return {
+    //   categories: state.categories,
+      post  : state.posts.filter((post) => post.id === ownProps.match.params.id)[0],
+      comments : state.comments.filter((comment) => comment.parentId === ownProps.match.params.id)
+  
+    }
+  }
+  
+  const mapDispatchToProps = (dispatch, ownProps) => (
+    bindActionCreators({
+      loadSinglePost,
+      updatePost,
+      loadComments,
+      addComment
+  
+    }, dispatch)
+  )
+  
+  export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(PostDetail)
+
+// export default PostDetail;
 
