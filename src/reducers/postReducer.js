@@ -3,6 +3,7 @@ import {
   ADD_POST,
   LOAD_SINGLE_POST,
   UPDATE_POST,
+  DELETE_POST,
 
 } from '../actions'
 
@@ -30,6 +31,9 @@ export function posts (state = initialPostState, action) {
     case UPDATE_POST :
     return [...state.filter((post) => post.id !== action.post.id),
     action.post
+    ]
+    case DELETE_POST :
+    return [...state.filter((post) => post.id !== action.id)
     ]
     default :
       return state

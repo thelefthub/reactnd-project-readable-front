@@ -3,6 +3,9 @@ import {
     ADD_COMMENT,
     LOAD_SINGLE_COMMENT,
     UPDATE_COMMENT,
+    DELETE_POST,
+    DELETE_COMMENT
+    
   
   } from '../actions'
   
@@ -32,6 +35,14 @@ import {
       return [
         ...state.filter((comment) => comment.id !== action.comment.id),
         action.comment
+      ]
+      case DELETE_POST :
+      return [
+        ...state.filter((comment) => comment.parentId !== action.id)
+      ]
+      case DELETE_COMMENT :
+      return [
+        ...state.filter((comment) => comment.id !== action.id)
       ]
       default :
         return state

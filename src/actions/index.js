@@ -3,10 +3,12 @@ export const LOAD_POST = 'LOAD_POST';
 export const ADD_POST = 'ADD_POST';
 export const LOAD_SINGLE_POST = 'LOAD_SINGLE_POST';
 export const UPDATE_POST = 'UPDATE_POST';
+export const DELETE_POST = 'DELETE_POST';
 export const LOAD_COMMENT = 'LOAD_COMMENT';
 export const ADD_COMMENT = 'ADD_COMMENT';
 export const LOAD_SINGLE_COMMENT = 'LOAD_SINGLE_COMMENT';
 export const UPDATE_COMMENT = 'UPDATE_COMMENT';
+export const DELETE_COMMENT = 'DELETE_COMMENT';
 
 // action creators: JavaScript objects that you set up to describe any event
 // in your application that should update your application’s state
@@ -53,6 +55,14 @@ export function updatePost (post) {
   }
 }
 
+//delete existing post
+export function deletePost (id) {
+  return {
+    type: DELETE_POST,
+    id
+  }
+}
+
 //get all comments
 export function loadComments (comments, parentId) {
   return {
@@ -62,11 +72,20 @@ export function loadComments (comments, parentId) {
   }
 }
 
-//add new post
+//add new comment
 export function addComment (comment) {
   return {
     type: ADD_COMMENT,
     comment
+  }
+}
+
+//delete a comment
+//add new post
+export function deleteComment (id) {
+  return {
+    type: DELETE_COMMENT,
+    id
   }
 }
 

@@ -6,7 +6,7 @@ import serializeForm from 'form-serialize';
 import { formatDate, generateId } from '../utils/helpers';
 import Modal from 'react-modal';
 import * as Api from '../utils/api';
-import { loadSinglePost, updatePost, loadComments, addComment } from '../actions';
+import { loadSinglePost, updatePost, deletePost, loadComments, addComment, deleteComment } from '../actions';
 import { bindActionCreators } from "redux";
 import { connect } from 'react-redux';
 
@@ -15,8 +15,11 @@ class PostDetail extends Component {
     
     
     state = {
-        post : {},
+        // post : {},
         commentModalOpen: false,
+        commentAuthorEdit: '',
+        commentBodyEdit: ''
+
         
         // body: '',
         // author: '',
@@ -51,18 +54,16 @@ class PostDetail extends Component {
         // Modal.setAppElement('#root');
       }
 
+      // update an existing post
       handleSubmit = (e) => {
         e.preventDefault()
         const values = serializeForm(e.target, { hash: true })
         Api.updatePost(this.props.match.params.id, values.title, values.body).then((post) => {
             this.props.updatePost(post);
 
-        });
-
-        
-        
-        // if (this.props.onCreatePost)
-        //   this.props.onCreatePost(generateId(), Date.now(), values.title, values.body, values.author, values.category);
+        }).catch((err) => {
+            console.log('error when persisting post: ', err);
+          });
       }
 
       openCommentModal = () => {
@@ -76,6 +77,7 @@ class PostDetail extends Component {
         }))
       }
 
+      // handling submitting a new comment
       handleCommentSubmit = (e) => {
         // addComment = (id, timestamp, body, author, parentId)
         e.preventDefault()
@@ -83,13 +85,40 @@ class PostDetail extends Component {
         Api.addComment(generateId(), Date.now(), values.commentArea, values.commentAuthor, this.props.match.params.id).then((comment) => {
             this.props.addComment(comment);
             this.setState({commentModalOpen : false});
-            });
+            }).catch((err) => {
+                console.log('error when persisting comment: ', err);
+              });
+      }
+
+    //   // handling updating an existing comment
+    //   handleCommentUpdate = (e) => {
+    //       console.log('update comment');
+          
+    //   }
+
+      // delete an existing post
+      deletePost = () => {
+          Api.deletePost(this.props.match.params.id).then(() => {
+            this.props.history.push('/')
+            this.props.deletePost(this.props.match.params.id)
+          }).catch((err) => {
+            console.log('error when deleting post: ', err);
+          });
+      }
+
+      deleteComment = (id) => {
+          Api.deleteComment(id).then(() => {
+            this.props.deleteComment(id)
+          }).catch((err) => {
+            console.log('error when deleting comment: ', err);
+          });
+          
       }
     
     
     render() {
 
-        const { commentModalOpen } = this.state;
+        const { commentModalOpen, commentAuthorEdit, commentBodyEdit } = this.state;
         const { post, comments } = this.props;
 
         // Modal.setAppElement('#root');
@@ -133,9 +162,10 @@ class PostDetail extends Component {
                     <textarea className='form-control' id="txtArea" rows="4" name="body" placeholder={post.body}></textarea>
                 </div>
                 <button type="submit" className={'label-align ' + 'btn btn-primary' + ' btn-custom'}>Change</button>
-                <button className={'label-align ' + 'btn btn-primary' + ' btn-custom'} onClick={() => this.openCommentModal()}>Add Comment</button>
-                <button className={'label-align ' + 'btn btn-primary' + ' btn-custom'} onClick={() => this.openCommentModal()}>Vote</button>
             </form>
+            <button className={'label-align ' + 'btn btn-danger' + ' btn-custom'} onClick={() => this.deletePost()}>Delete Post</button>
+            <button className={'label-align ' + 'btn btn-primary' + ' btn-custom'} onClick={() => this.openCommentModal()}><i className="fa fa-thumbs-up" aria-hidden="true"></i></button>
+            <button className={'label-align ' + 'btn btn-primary' + ' btn-custom'} onClick={() => this.openCommentModal()}><i className="fa fa-thumbs-down" aria-hidden="true"></i></button>
             <h4>Comments</h4>
             <Modal
                 className='modal-post'
@@ -145,19 +175,22 @@ class PostDetail extends Component {
                 contentLabel='comment label'
                 >
                 <div>
-                <h2>Add comment</h2>
+                {commentAuthorEdit === '' ? (
+                    <h2>Add comment</h2>
+                ) : (
+                    <h2>Modify comment</h2>
+                )}
                 <form onSubmit={this.handleCommentSubmit}>
                     <div className='form-group'>
                         <label htmlFor="commentAuthor" className='label-align'>Author</label>
-                        <input type='text' name='commentAuthor' className='form-control'/>
+                        <input type='text' name='commentAuthor' className='form-control' placeholder={commentAuthorEdit}/>
                     </div>
                     <div className='form-group'>
-                    <label htmlFor="commentArea" className='label-align'>Post</label>
-                    <textarea className='form-control' id="commentArea" rows="4" name="commentArea"></textarea>
+                    <label htmlFor="commentArea" className='label-align'>Comment</label>
+                    <textarea className='form-control' id="commentArea" rows="4" name="commentArea" placeholder={commentBodyEdit}></textarea>
                     </div>
                     <button type="submit" className={'label-align ' + 'btn btn-primary' + ' btn-custom'}>Submit</button>
                 </form>
-                
                 </div>
             </Modal>
             
@@ -170,6 +203,10 @@ class PostDetail extends Component {
                   <th scope='col'>author</th>
                   <th scope='col'>comment</th>
                   <th scope='col'>score</th>
+                  <th scope='col'></th>
+                  <th scope='col'></th>
+                  <th scope='col'></th>
+                  <th scope='col'></th>
                 </tr>
               </thead>
               <tbody>
@@ -181,12 +218,16 @@ class PostDetail extends Component {
                       <td>{comment.author}</td>
                       <td>{comment.body}</td>
                       <td>{comment.voteScore}</td>
+                      <td onClick={() => this.openCommentModal()}><i className="fa fa-thumbs-up" aria-hidden="true"></i></td>
+                      <td onClick={() => this.openCommentModal()}><i className="fa fa-thumbs-down" aria-hidden="true"></i></td>
+                      <td onClick={() => this.openCommentModal()}><i className="fa fa-pencil-square-o" aria-hidden="true"></i></td>
+                      <td onClick={() => this.deleteComment(comment.id)}><i className="fa fa-trash" aria-hidden="true"></i></td>
                     </tr>
                   ))
               }
               </tbody>
             </table>
-            
+            <button className={'label-align ' + 'btn btn-primary' + ' btn-custom'} onClick={() => this.openCommentModal()}>Add Comment</button>
                        
             </div>
             );
@@ -206,8 +247,10 @@ const mapStateToProps = (state, ownProps) => {
     bindActionCreators({
       loadSinglePost,
       updatePost,
+      deletePost,
       loadComments,
-      addComment
+      addComment,
+      deleteComment,
   
     }, dispatch)
   )
