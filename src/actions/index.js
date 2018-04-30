@@ -81,11 +81,18 @@ export function addComment (comment) {
 }
 
 //delete a comment
-//add new post
 export function deleteComment (id) {
   return {
     type: DELETE_COMMENT,
     id
+  }
+}
+
+//update existing comment
+export function updateComment (comment) {
+  return {
+    type: UPDATE_COMMENT,
+    comment
   }
 }
 

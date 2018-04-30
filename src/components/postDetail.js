@@ -6,7 +6,7 @@ import serializeForm from 'form-serialize';
 import { formatDate, generateId } from '../utils/helpers';
 import Modal from 'react-modal';
 import * as Api from '../utils/api';
-import { loadSinglePost, updatePost, deletePost, loadComments, addComment, deleteComment } from '../actions';
+import { loadSinglePost, updatePost, deletePost, loadComments, addComment, deleteComment, updateComment } from '../actions';
 import { bindActionCreators } from "redux";
 import { connect } from 'react-redux';
 
@@ -18,7 +18,8 @@ class PostDetail extends Component {
         // post : {},
         commentModalOpen: false,
         commentAuthorEdit: '',
-        commentBodyEdit: ''
+        commentBodyEdit: '',
+        commentIdEdit:''
 
         
         // body: '',
@@ -66,28 +67,60 @@ class PostDetail extends Component {
           });
       }
 
-      openCommentModal = () => {
-        this.setState(() => ({
-            commentModalOpen: true
-        }))
+      openCommentModal = (id, author, body) => {
+        if (id != null) {
+            this.setState(() => ({
+                commentModalOpen: true,
+                commentAuthorEdit: author,
+                commentBodyEdit: body,
+                commentIdEdit: id
+            }))
+
+        } else {
+            this.setState({commentModalOpen : true});
+        }
+        
+        
       }
       closeCommentModal = () => {
         this.setState(() => ({
-            commentModalOpen: false
+            commentModalOpen: false,
+            commentAuthorEdit: '',
+            commentBodyEdit: '',
+            commentIdEdit: ''
         }))
       }
 
-      // handling submitting a new comment
+      // handling submitting a new or existing comment
       handleCommentSubmit = (e) => {
-        // addComment = (id, timestamp, body, author, parentId)
         e.preventDefault()
         const values = serializeForm(e.target, { hash: true })
-        Api.addComment(generateId(), Date.now(), values.commentArea, values.commentAuthor, this.props.match.params.id).then((comment) => {
-            this.props.addComment(comment);
-            this.setState({commentModalOpen : false});
+        if (this.state.commentAuthorEdit==='') {
+            Api.addComment(generateId(), Date.now(), values.commentArea, values.commentAuthor, this.props.match.params.id).then((comment) => {
+                this.props.addComment(comment);
+                this.setState({commentModalOpen : false});
+                }).catch((err) => {
+                    console.log('error when persisting comment: ', err);
+                  });
+        } else {
+            console.log(values.commentArea);
+            // id, timestamp, body
+            Api.updateComment(this.state.commentIdEdit, Date.now(), values.commentArea).then((comment) => {
+                this.props.updateComment(comment);
+                this.setState(() => ({
+                    commentModalOpen: false,
+                    commentAuthorEdit: '',
+                    commentBodyEdit: '',
+                    commentIdEdit: ''
+                }))
             }).catch((err) => {
                 console.log('error when persisting comment: ', err);
               });
+
+            
+            
+        }
+       
       }
 
     //   // handling updating an existing comment
@@ -175,7 +208,7 @@ class PostDetail extends Component {
                 contentLabel='comment label'
                 >
                 <div>
-                {commentAuthorEdit === '' ? (
+                {commentBodyEdit === '' ? (
                     <h2>Add comment</h2>
                 ) : (
                     <h2>Modify comment</h2>
@@ -183,7 +216,11 @@ class PostDetail extends Component {
                 <form onSubmit={this.handleCommentSubmit}>
                     <div className='form-group'>
                         <label htmlFor="commentAuthor" className='label-align'>Author</label>
-                        <input type='text' name='commentAuthor' className='form-control' placeholder={commentAuthorEdit}/>
+                        {commentBodyEdit === '' ? (
+                            <input type='text' name='commentAuthor' className='form-control'/>
+                        ) : (
+                            <input type='text' name='commentAuthor' className='form-control' placeholder={commentAuthorEdit} disabled/>
+                        )}
                     </div>
                     <div className='form-group'>
                     <label htmlFor="commentArea" className='label-align'>Comment</label>
@@ -220,7 +257,7 @@ class PostDetail extends Component {
                       <td>{comment.voteScore}</td>
                       <td onClick={() => this.openCommentModal()}><i className="fa fa-thumbs-up" aria-hidden="true"></i></td>
                       <td onClick={() => this.openCommentModal()}><i className="fa fa-thumbs-down" aria-hidden="true"></i></td>
-                      <td onClick={() => this.openCommentModal()}><i className="fa fa-pencil-square-o" aria-hidden="true"></i></td>
+                      <td onClick={() => this.openCommentModal(comment.id, comment.author,comment.body)}><i className="fa fa-pencil-square-o" aria-hidden="true"></i></td>
                       <td onClick={() => this.deleteComment(comment.id)}><i className="fa fa-trash" aria-hidden="true"></i></td>
                     </tr>
                   ))
@@ -251,6 +288,7 @@ const mapStateToProps = (state, ownProps) => {
       loadComments,
       addComment,
       deleteComment,
+      updateComment
   
     }, dispatch)
   )
