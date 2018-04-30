@@ -40,7 +40,7 @@ class App extends Component {
   }
 
   createPost(id, timestamp, title, body, author, category) {
-    console.log('onCreate' , id, timestamp, title, body, author, category);
+    console.log('onCreate', id, timestamp, title, body, author, category);
     // Api.test(id, timestamp, title, body, author, category);
     Api.addPost(id, timestamp, title, body, author, category).then((post) => {
       // console.log('res ',post);

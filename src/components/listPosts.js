@@ -59,7 +59,7 @@ class ListPosts extends Component {
   onSort = (value) => {
     console.log('response ', value);
     this.setState({sortChoice : value});
-    this.props.posts.sort(sortBy(value))
+    this.props.posts.sort(sortBy(value));
     // console.log('sorted ', this.props.posts);
   }
 

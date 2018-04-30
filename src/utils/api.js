@@ -61,7 +61,8 @@ export const castPostVote = (id, option) =>
     method: "POST",
     headers,
     body: JSON.stringify({option})
-  })
+  }).then(res => res.json()
+);
 
 // get all comments for a single post
 export const getComments = (id) => fetch(`${api}/posts/${id}/comments`, { headers })
@@ -104,4 +105,5 @@ export const castCommentVote = (id, option) =>
     method: "POST",
     headers,
     body: JSON.stringify({option})
-  })
+  }).then(res => res.json()
+);

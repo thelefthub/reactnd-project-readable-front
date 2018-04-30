@@ -6,9 +6,10 @@ import serializeForm from 'form-serialize';
 import { formatDate, generateId } from '../utils/helpers';
 import Modal from 'react-modal';
 import * as Api from '../utils/api';
-import { loadSinglePost, updatePost, deletePost, loadComments, addComment, deleteComment, updateComment } from '../actions';
+import { loadSinglePost, updatePost, deletePost, loadComments, addComment, deleteComment, updateComment, castPostVote, castCommentVote } from '../actions';
 import { bindActionCreators } from "redux";
 import { connect } from 'react-redux';
+import sortBy from 'sort-by';
 
 
 class PostDetail extends Component {
@@ -20,20 +21,12 @@ class PostDetail extends Component {
         commentAuthorEdit: '',
         commentBodyEdit: '',
         commentIdEdit:''
-
-        
-        // body: '',
-        // author: '',
-        // category: ''
-        // posts:[]
       }
 
       componentDidMount() {
 
-        // get available posts
+        // get post detail
         Api.getPost(this.props.match.params.id).then((post) => {
-            // this.setState({post: post});
-            // console.log('props', this.props);
             this.props.loadSinglePost(post);
         });
 
@@ -42,8 +35,6 @@ class PostDetail extends Component {
         this.props.loadComments(comments, this.props.match.params.id);
         // console.log('comments ', this.props.comments);
         });
-
-        
 
         // let post = this.props.loadSinglePost(this.props.match.params.id);
         // console.log('state: ', Store.getState());
@@ -95,7 +86,7 @@ class PostDetail extends Component {
       handleCommentSubmit = (e) => {
         e.preventDefault()
         const values = serializeForm(e.target, { hash: true })
-        if (this.state.commentAuthorEdit==='') {
+        if (this.state.commentAuthorEdit === '') {
             Api.addComment(generateId(), Date.now(), values.commentArea, values.commentAuthor, this.props.match.params.id).then((comment) => {
                 this.props.addComment(comment);
                 this.setState({commentModalOpen : false});
@@ -116,37 +107,46 @@ class PostDetail extends Component {
             }).catch((err) => {
                 console.log('error when persisting comment: ', err);
               });
-
-            
-            
         }
-       
       }
-
-    //   // handling updating an existing comment
-    //   handleCommentUpdate = (e) => {
-    //       console.log('update comment');
-          
-    //   }
-
+      
       // delete an existing post
       deletePost = () => {
           Api.deletePost(this.props.match.params.id).then(() => {
-            this.props.history.push('/')
+            this.props.history.push('/');
             this.props.deletePost(this.props.match.params.id)
           }).catch((err) => {
             console.log('error when deleting post: ', err);
           });
       }
 
+      // delete an existing comment
       deleteComment = (id) => {
           Api.deleteComment(id).then(() => {
-            this.props.deleteComment(id)
+            this.props.deleteComment(id);
           }).catch((err) => {
             console.log('error when deleting comment: ', err);
           });
           
       }
+
+      // cast a vote the post
+      castPostVote = (option) => {
+          Api.castPostVote(this.props.match.params.id, option).then((post) => {
+              this.props.castPostVote(post);
+          }).catch((err) => {
+            console.log('error when casting vote: ', err);
+          });
+      }
+
+      // cast a vote a comment
+      castCommentVote = (id, option) => {
+        Api.castCommentVote(id, option).then((comment) => {
+            this.props.castCommentVote(comment);
+        }).catch((err) => {
+          console.log('error when casting vote: ', err);
+        });
+    }
     
     
     render() {
@@ -197,8 +197,8 @@ class PostDetail extends Component {
                 <button type="submit" className={'label-align ' + 'btn btn-primary' + ' btn-custom'}>Change</button>
             </form>
             <button className={'label-align ' + 'btn btn-danger' + ' btn-custom'} onClick={() => this.deletePost()}>Delete Post</button>
-            <button className={'label-align ' + 'btn btn-primary' + ' btn-custom'} onClick={() => this.openCommentModal()}><i className="fa fa-thumbs-up" aria-hidden="true"></i></button>
-            <button className={'label-align ' + 'btn btn-primary' + ' btn-custom'} onClick={() => this.openCommentModal()}><i className="fa fa-thumbs-down" aria-hidden="true"></i></button>
+            <button className={'label-align ' + 'btn btn-primary' + ' btn-custom'} onClick={() => this.castPostVote('upVote')}><i className="fa fa-thumbs-up" aria-hidden="true"></i></button>
+            <button className={'label-align ' + 'btn btn-primary' + ' btn-custom'} onClick={() => this.castPostVote('downVote')}><i className="fa fa-thumbs-down" aria-hidden="true"></i></button>
             <h4>Comments</h4>
             <Modal
                 className='modal-post'
@@ -248,16 +248,16 @@ class PostDetail extends Component {
               </thead>
               <tbody>
               {
-                  comments.map((comment) =>(
+                  comments.map((comment) => (
                     <tr key={comment.id}>
                       <th scope='row'>{comment.id}</th>
                       <td>{formatDate(comment.timestamp)}</td>
                       <td>{comment.author}</td>
                       <td>{comment.body}</td>
                       <td>{comment.voteScore}</td>
-                      <td onClick={() => this.openCommentModal()}><i className="fa fa-thumbs-up" aria-hidden="true"></i></td>
-                      <td onClick={() => this.openCommentModal()}><i className="fa fa-thumbs-down" aria-hidden="true"></i></td>
-                      <td onClick={() => this.openCommentModal(comment.id, comment.author,comment.body)}><i className="fa fa-pencil-square-o" aria-hidden="true"></i></td>
+                      <td onClick={() => this.castCommentVote(comment.id, 'upVote')}><i className="fa fa-thumbs-up" aria-hidden="true"></i></td>
+                      <td onClick={() => this.castCommentVote(comment.id, 'downVote')}><i className="fa fa-thumbs-down" aria-hidden="true"></i></td>
+                      <td onClick={() => this.openCommentModal(comment.id, comment.author, comment.body)}><i className="fa fa-pencil-square-o" aria-hidden="true"></i></td>
                       <td onClick={() => this.deleteComment(comment.id)}><i className="fa fa-trash" aria-hidden="true"></i></td>
                     </tr>
                   ))
@@ -275,7 +275,7 @@ const mapStateToProps = (state, ownProps) => {
     return {
     //   categories: state.categories,
       post  : state.posts.filter((post) => post.id === ownProps.match.params.id)[0],
-      comments : state.comments.filter((comment) => comment.parentId === ownProps.match.params.id)
+      comments : state.comments.filter((comment) => comment.parentId === ownProps.match.params.id).sort(sortBy('timestamp'))
   
     }
   }
@@ -288,7 +288,9 @@ const mapStateToProps = (state, ownProps) => {
       loadComments,
       addComment,
       deleteComment,
-      updateComment
+      updateComment,
+      castPostVote,
+      castCommentVote
   
     }, dispatch)
   )

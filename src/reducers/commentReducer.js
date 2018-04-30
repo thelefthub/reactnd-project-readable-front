@@ -5,6 +5,7 @@ import {
     UPDATE_COMMENT,
     DELETE_POST,
     DELETE_COMMENT,
+    CAST_COMMENT_VOTE
     
     
   
@@ -14,7 +15,7 @@ import {
   
   // the reducer function
   // if undefined use initialCalendarState and returns an array of comments
-  export function comments (state = initialCommentState, action) {
+  export function comments(state = initialCommentState, action) {
   
     switch (action.type) {
       case LOAD_COMMENT :
@@ -44,6 +45,11 @@ import {
       case DELETE_COMMENT :
       return [
         ...state.filter((comment) => comment.id !== action.id)
+      ]
+      case CAST_COMMENT_VOTE :
+      return [
+        ...state.filter((comment) => comment.id !== action.comment.id),
+        action.comment
       ]
       default :
         return state
