@@ -130,7 +130,7 @@ class PostDetail extends Component {
           
       }
 
-      // cast a vote the post
+      // cast a vote on the post
       castPostVote = (option) => {
           Api.castPostVote(this.props.match.params.id, option).then((post) => {
               this.props.castPostVote(post);
@@ -139,7 +139,7 @@ class PostDetail extends Component {
           });
       }
 
-      // cast a vote a comment
+      // cast a vote on a comment
       castCommentVote = (id, option) => {
         Api.castCommentVote(id, option).then((comment) => {
             this.props.castCommentVote(comment);

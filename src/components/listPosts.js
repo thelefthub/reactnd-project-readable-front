@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import '../App.css';
 import { formatDate } from '../utils/helpers';
 import sortBy from 'sort-by';
+import Modal from 'react-modal';
 // import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 
 
@@ -13,6 +14,11 @@ class ListPosts extends Component {
   state = {
     sortChoice: '',
     viewChoice: '',
+    modalOpen: false,
+    postTitleEdit: '',
+    postBodyEdit: '',
+    postIdEdit: ''
+
     // posts:[]
   }
 
@@ -57,14 +63,34 @@ class ListPosts extends Component {
 
   //order posts on user preference
   onSort = (value) => {
-    console.log('response ', value);
     this.setState({sortChoice : value});
     this.props.posts.sort(sortBy(value));
     // console.log('sorted ', this.props.posts);
   }
 
+  openModal = (id, title, body) => {
+    this.setState({modalOpen : true});
+
+    this.setState(() => ({
+      modalOpen: true,
+      postTitleEdit: title,
+      postBodyEdit: body,
+      postIdEdit: id    
+    }))
+  }
+  closeModal = () => {
+    this.setState(() => ({
+      modalOpen: false,
+      postTitleEdit: '',
+      postBodyEdit: '',
+      postIdEdit: ''    
+    }))
+  }
+
+  
+
   render() {
-    const { sortChoice, viewChoice } = this.state
+    const { sortChoice, viewChoice, modalOpen, postTitleEdit, postBodyEdit, postIdEdit } = this.state
     const { categories, posts } = this.props
 
     return (
@@ -105,6 +131,12 @@ class ListPosts extends Component {
                   <th scope='col'>timestamp<i className='fa fa-fw fa-sort' onClick={(e) => this.onSort('timestamp')}></i></th>
                   <th scope='col'>title<i className='fa fa-fw fa-sort' onClick={(e) => this.onSort('title')}></i></th>
                   <th scope='col'>author<i className='fa fa-fw fa-sort' onClick={(e) => this.onSort('author')}></i></th>
+                  <th scope='col'>score<i className='fa fa-fw fa-sort' onClick={(e) => this.onSort('voteScore')}></i></th>
+                  <th scope='col'>comments<i className='fa fa-fw fa-sort' onClick={(e) => this.onSort('commentCount')}></i></th>
+                  <th scope='col'></th>
+                  <th scope='col'></th>
+                  <th scope='col'></th>
+                  <th scope='col'></th>
                 </tr>
               </thead>
               <tbody>
@@ -123,36 +155,16 @@ class ListPosts extends Component {
                      <td>{formatDate(post.timestamp)}</td>
                      <td>{post.title}</td>
                      <td>{post.author}</td>
+                     <td>{post.voteScore}</td>
+                     <td>{post.commentCount}</td>
+                     <td onClick={() => this.props.castPostVote(post.id, 'upVote')}><i className="fa fa-thumbs-up" aria-hidden="true"></i></td>
+                     <td onClick={() => this.props.castPostVote(post.id, 'downVote')}><i className="fa fa-thumbs-down" aria-hidden="true"></i></td>
+                     <td onClick={() => this.openModal(post.id,post.title, post.body )}><i className="fa fa-pencil-square-o" aria-hidden="true"></i></td>
+                     <td onClick={() => this.props.deletePost(post.id)}><i className="fa fa-trash" aria-hidden="true"></i></td>
                    </tr>
                ))
 
-              
-
-              /* this.state.viewChoice === 'home' ? (
-                this.props.posts.map((post) => (
-                    <tr key={post.id}>
-                      <th scope='row'>{post.id}</th>
-                      <td>{formatDate(post.timestamp)}</td>
-                      <td>{post.title}</td>
-                      <td>@{post.author}</td>
-                    </tr>
-                ))
-              ) : (
-                this.props.posts.filter((posted) => (
-                  posted.category === this.state.viewChoice))
-                .map((post) => (
-                    <tr key={post.id}>
-                      <th scope='row'>{post.id}</th>
-                      <td>{formatDate(post.timestamp)}</td>
-                      <td>{post.title}</td>
-                      <td>@{post.author}</td>
-                    </tr>
-                ))
-              ) */
-
-
-
-                  /* this.props.posts.map((post) => (
+                /* this.props.posts.map((post) => (
                     <tr key={post.id}>
                       <th scope='row'>{post.id}</th>
                       <td>{formatDate(post.timestamp)}</td>
@@ -163,6 +175,28 @@ class ListPosts extends Component {
               }
               </tbody>
             </table>
+            <Modal
+                className='modal-post'
+                overlayClassName='overlay'
+                isOpen={modalOpen}
+                onRequestClose={this.closeModal}
+                contentLabel='comment label'
+                >
+                <div>
+                <h2>Modify post</h2>
+                <form onSubmit={(e) => this.props.handleSubmit(e, postIdEdit)}>
+                    <div className='form-group'>
+                        <label htmlFor="title" className='label-align'>title</label>
+                        <input type='text' name='title' className='form-control' placeholder={postTitleEdit}/>
+                    </div>
+                    <div className='form-group'>
+                    <label htmlFor="body" className='label-align'>body</label>
+                    <textarea className='form-control' id="txtArea" rows="4" name="body" placeholder={postBodyEdit}></textarea>
+                    </div>
+                    <button type="submit" className={'label-align ' + 'btn btn-primary' + ' btn-custom'}>Submit</button>
+                </form>
+                </div>
+            </Modal>
               <div className='open-add'>
                 <Link to='/addpost'>Add a post</Link>
               </div>

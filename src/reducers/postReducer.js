@@ -4,7 +4,8 @@ import {
   LOAD_SINGLE_POST,
   UPDATE_POST,
   DELETE_POST,
-  CAST_POST_VOTE
+  CAST_POST_VOTE,
+  ADD_COMMENT
 
 } from '../actions'
 
@@ -40,6 +41,15 @@ export function posts(state = initialPostState, action) {
     return [...state.filter((post) => post.id !== action.post.id),
     action.post
     ]
+    case ADD_COMMENT :
+    return state.map((post) => {
+      if (post.id === action.comment.parentId) {
+        post.commentCount ++
+        return post
+      } else {
+        return post
+      } 
+    })
     default :
       return state
   }
