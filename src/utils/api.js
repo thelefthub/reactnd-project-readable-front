@@ -22,7 +22,14 @@ export const getPostsPerCategory = (category) => fetch(`${api}/${category}/posts
 
 // get a specific post
 export const getPost = (id) => fetch(`${api}/posts/${id}`, { headers })
-  .then(res => res.json())
+  // .then(res => res.json())
+  .then((res) => {
+    if (res.ok) {
+      return res.json();
+    } else {
+      throw new Error('Something went wrong');
+    }
+  })
 
 // add a new post
 export const addPost = (id, timestamp, title, body, author, category) =>

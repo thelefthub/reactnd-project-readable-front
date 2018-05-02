@@ -9,6 +9,7 @@ import * as Api from '../utils/api';
 import { loadSinglePost, updatePost, deletePost, loadComments, addComment, deleteComment, updateComment, castPostVote, castCommentVote } from '../actions';
 import { bindActionCreators } from "redux";
 import { connect } from 'react-redux';
+import Error from './error'
 import sortBy from 'sort-by';
 
 
@@ -25,10 +26,16 @@ class PostDetail extends Component {
 
       componentDidMount() {
 
+        console.log('param: ', this.props.match.params.id);
+        
+
         // get post detail
         Api.getPost(this.props.match.params.id).then((post) => {
             this.props.loadSinglePost(post);
-        });
+            console.log('loaded: ',post)
+        }).catch((err) => {
+            console.log('error when requesting post: ', err);
+          });
 
         // get available comments
         Api.getComments(this.props.match.params.id).then((comments) => {
@@ -150,11 +157,16 @@ class PostDetail extends Component {
 
         return (
             <div className='container'>
+            {post == null ? (
+                    <Error></Error>
+                ) : (
+            <div>    
             <h2>Post Detail</h2>
+            
             <form onSubmit={this.handleSubmit}>
                 <div className='form-group'>
                     <label htmlFor="title" className='label-align'>Title</label>
-                    <input type='text' name='title' className='form-control' id='title' placeholder={post.title}/>
+                    <input type='text' name='title' className='form-control' id='title' defaultValue={post.title}/>
                 </div>
                 <div className='form-group'>
                     <label htmlFor="author" className='label-align'>Author</label>
@@ -184,7 +196,7 @@ class PostDetail extends Component {
                 </div>
                 <div className='form-group'>
                     <label htmlFor="txtArea" className='label-align'>Post</label>
-                    <textarea className='form-control' id="txtArea" rows="4" name="body" placeholder={post.body}></textarea>
+                    <textarea className='form-control' id="txtArea" rows="4" name="body" defaultValue={post.body}></textarea>
                 </div>
                 <button type="submit" className={'label-align ' + 'btn btn-primary' + ' btn-custom'}>Change</button>
             </form>
@@ -216,7 +228,7 @@ class PostDetail extends Component {
                     </div>
                     <div className='form-group'>
                     <label htmlFor="commentArea" className='label-align'>Comment</label>
-                    <textarea className='form-control' id="commentArea" rows="4" name="commentArea" placeholder={commentBodyEdit}></textarea>
+                    <textarea className='form-control' id="commentArea" rows="4" name="commentArea" defaultValue={commentBodyEdit}></textarea>
                     </div>
                     <button type="submit" className={'label-align ' + 'btn btn-primary' + ' btn-custom'}>Submit</button>
                 </form>
@@ -257,7 +269,8 @@ class PostDetail extends Component {
               </tbody>
             </table>
             <button className={'label-align ' + 'btn btn-primary' + ' btn-custom'} onClick={() => this.openCommentModal()}>Add Comment</button>
-                       
+            </div>
+            )}
             </div>
             );
     }

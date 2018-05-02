@@ -41,6 +41,9 @@ class ListPosts extends Component {
       console.log('after updates ', this.state.viewChoice);
     });
 
+    console.log('posts: ', this.props.posts);
+    
+
 
   }
 
@@ -115,7 +118,7 @@ class ListPosts extends Component {
                   this.props.categories.map((cat) => (
                   <li key={cat.name} className={'list-group-item ' + (this.state.viewChoice === cat.name ? 'list-group-item-secondary' : '')}>
 
-                    <Link to={`/${cat.name}`} onClick={(e) => this.onViewChoice(cat.name)}>{cat.name}</Link>
+                    <Link to={`/category/${cat.name}`} onClick={(e) => this.onViewChoice(cat.name)}>{cat.name}</Link>
                 </li>
                 ))
               }
@@ -150,7 +153,7 @@ class ListPosts extends Component {
                    return filtered;
                  }, []).map((post) => (
                    <tr key={post.id}>
-                     <th scope='row'><Link to={`/${post.category}/${post.id}`}>{post.id}</Link></th>
+                     <th scope='row'><Link to={`/posts/${post.category}/${post.id}`}>{post.id}</Link></th>
                      <td>{formatDate(post.timestamp)}</td>
                      <td>{post.title}</td>
                      <td>{post.author}</td>
@@ -186,11 +189,11 @@ class ListPosts extends Component {
                 <form onSubmit={(e) => this.handleSubmit(e, postIdEdit)}>
                     <div className='form-group'>
                         <label htmlFor="title" className='label-align'>title</label>
-                        <input type='text' name='title' className='form-control' placeholder={postTitleEdit}/>
+                        <input type='text' name='title' className='form-control' defaultValue={postTitleEdit}/>
                     </div>
                     <div className='form-group'>
                     <label htmlFor="body" className='label-align'>body</label>
-                    <textarea className='form-control' id="txtArea" rows="4" name="body" placeholder={postBodyEdit}></textarea>
+                    <textarea className='form-control' id="txtArea" rows="4" name="body" defaultValue={postBodyEdit}></textarea>
                     </div>
                     <button type="submit" className={'label-align ' + 'btn btn-primary' + ' btn-custom'}>Submit</button>
                 </form>

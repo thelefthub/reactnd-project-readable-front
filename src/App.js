@@ -109,7 +109,7 @@ class App extends Component {
             {...props}
             />
           )}/>
-        <Route exact path="/:name" render={(props) => (
+        <Route exact path="/category/:name" render={(props) => (
           <ListPosts
             categories={this.props.categories}
             posts={this.props.posts}
@@ -121,7 +121,7 @@ class App extends Component {
 
             />
           )}/>
-        <Route path='/addpost' render={({ history }) => (
+        <Route path="/addpost" render={({ history }) => (
         <CreatePost
           categories={this.props.categories}
           onCreatePost={(id, timestamp, title, body, author, category) => {
@@ -130,7 +130,7 @@ class App extends Component {
           }}
           />
         )}/>
-        <Route path="/:category/:id" render={(props) => (
+        <Route path="/posts/:category/:id" render={(props) => (
           <PostDetail
             {...props}
             />
