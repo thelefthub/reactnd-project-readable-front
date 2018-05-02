@@ -61,10 +61,16 @@ class ListPosts extends Component {
   //   // console.log('sorted ', this.props.posts);
   // }
 
+  // //order posts on user preference
+  // onSort = (value) => {
+  //   this.setState({sortChoice : value});
+  //   this.props.posts.sort(sortBy(value));
+  //   // console.log('sorted ', this.props.posts);
+  // }
+
   //order posts on user preference
   onSort = (value) => {
-    this.setState({sortChoice : value});
-    this.props.posts.sort(sortBy(value));
+    this.props.onSort(value);
     // console.log('sorted ', this.props.posts);
   }
 
@@ -85,6 +91,11 @@ class ListPosts extends Component {
       postBodyEdit: '',
       postIdEdit: ''    
     }))
+  }
+
+  handleSubmit = (e, id) => {
+    this.props.handleSubmit(e, id)
+    this.closeModal();
   }
 
   
@@ -112,18 +123,6 @@ class ListPosts extends Component {
           </div>
           <div className='col-10'>
             <h2>Posts</h2>
-
-            {
-            // <form className='order-select'>
-            //   <div className='form-group'>
-            //     <label htmlFor='orderSelect'>Order by</label>
-            //     <select value={sortChoice} onChange={(e) => this.onSort2(e)} id='orderSelect' className='form-control'>
-            //       <option value='timestamp'>Date</option>
-            //       <option value='voteScore'>Score</option>
-            //     </select>
-            //   </div>
-            // </form>
-            }
             <table className='table'>
               <thead>
                 <tr>
@@ -184,7 +183,7 @@ class ListPosts extends Component {
                 >
                 <div>
                 <h2>Modify post</h2>
-                <form onSubmit={(e) => this.props.handleSubmit(e, postIdEdit)}>
+                <form onSubmit={(e) => this.handleSubmit(e, postIdEdit)}>
                     <div className='form-group'>
                         <label htmlFor="title" className='label-align'>title</label>
                         <input type='text' name='title' className='form-control' placeholder={postTitleEdit}/>

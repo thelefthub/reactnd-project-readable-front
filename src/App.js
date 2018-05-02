@@ -8,9 +8,10 @@ import CreatePost from './components/createPost';
 import PostDetail from './components/postDetail';
 import * as Api from './utils/api';
 import { connect } from 'react-redux';
-import { loadCategories, loadPosts, addPost, deletePost, castPostVote, updatePost } from './actions';
+import { loadCategories, loadPosts, addPost, deletePost, castPostVote, updatePost, orderPost } from './actions';
 import { bindActionCreators } from "redux";
 import serializeForm from 'form-serialize';
+import sortBy from 'sort-by';
 
 class App extends Component {
 
@@ -18,6 +19,7 @@ class App extends Component {
     // posts : [],
     // comments : [],
     // categories : []
+    sortChoice : 'id'
   }
 
   componentDidMount() {
@@ -82,6 +84,15 @@ class App extends Component {
       });
   }
 
+  //order posts on user preference
+  onSort = (value) => {
+    
+    this.props.orderPost(value);
+    // this.props.posts.sort(sortBy('id'));
+
+    console.log('posts order', this.props.order);
+  }
+
 
   render() {
 
@@ -94,6 +105,7 @@ class App extends Component {
             deletePost={this.deletePost}
             castPostVote={this.castPostVote}
             handleSubmit={this.handleSubmit}
+            onSort={this.onSort}
             {...props}
             />
           )}/>
@@ -104,6 +116,7 @@ class App extends Component {
             deletePost={this.deletePost}
             castPostVote={this.castPostVote}
             handleSubmit={this.handleSubmit}
+            onSort={this.onSort}
             {...props}
 
             />
@@ -131,7 +144,8 @@ class App extends Component {
 const mapStateToProps = (state, ownProps) => {
   return {
     categories: state.categories,
-    posts: state.posts,
+    posts: state.posts.sort(sortBy(state.order.ordering)),
+    order: state.order.ordering
   }
 }
 
@@ -142,7 +156,8 @@ const mapDispatchToProps = (dispatch, ownProps) => (
     addPost,
     deletePost,
     castPostVote,
-    updatePost
+    updatePost,
+    orderPost
 
   }, dispatch)
 )

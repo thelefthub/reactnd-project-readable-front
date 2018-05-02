@@ -36,15 +36,7 @@ class PostDetail extends Component {
         // console.log('comments ', this.props.comments);
         });
 
-        // let post = this.props.loadSinglePost(this.props.match.params.id);
-        // console.log('state: ', Store.getState());
-        // console.log('props: ', this.props);
-        
-        // let post = this.props.posts.filter((post) => post.id === this.props.match.params.id);
-        // this.setState({post: post[0]})
-        // console.log(post[0]);
-        // Modal.setAppElement('#root');
-      }
+        }
 
       // update an existing post
       handleSubmit = (e) => {

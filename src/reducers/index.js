@@ -5,7 +5,7 @@ import {
 } from "./categoryReducer"
 
 import {
-  posts
+  posts, order
 } from "./postReducer"
 
 import {
@@ -19,6 +19,7 @@ import {
 export default combineReducers({
   categories,
   posts,
-  comments
+  comments,
+  order
 
 })

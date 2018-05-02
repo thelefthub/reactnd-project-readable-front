@@ -11,6 +11,7 @@ export const LOAD_SINGLE_COMMENT = 'LOAD_SINGLE_COMMENT';
 export const UPDATE_COMMENT = 'UPDATE_COMMENT';
 export const DELETE_COMMENT = 'DELETE_COMMENT';
 export const CAST_COMMENT_VOTE = 'CAST_COMMENT_VOTE';
+export const ORDER_POST = 'ORDER_POST';
 
 // action creators: JavaScript objects that you set up to describe any event
 // in your application that should update your application’s state
@@ -111,6 +112,14 @@ export function castCommentVote(comment) {
   return {
     type: CAST_COMMENT_VOTE,
     comment
+  }
+}
+
+//order by value
+export function orderPost(value) {
+  return {
+    type: ORDER_POST,
+    value
   }
 }
 

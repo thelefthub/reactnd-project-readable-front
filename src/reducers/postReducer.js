@@ -5,9 +5,26 @@ import {
   UPDATE_POST,
   DELETE_POST,
   CAST_POST_VOTE,
-  ADD_COMMENT
+  ADD_COMMENT,
+  ORDER_POST
 
 } from '../actions'
+
+// import sortBy from 'sort-by'; 
+
+const initialOrderState = { ordering: 'id' }
+
+export function order (state = initialOrderState, action) {
+  switch (action.type) {
+    case ORDER_POST :
+      return {
+        ...state,
+        ordering: action.value,
+      }
+    default :
+      return state
+  }
+}
 
 const initialPostState = []
 
@@ -57,3 +74,5 @@ export function posts(state = initialPostState, action) {
 }
 
 
+// case ORDER_POST :
+//     return [...state.sort(sortBy(action.value))]
