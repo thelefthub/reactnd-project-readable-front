@@ -109,7 +109,7 @@ class App extends Component {
             {...props}
             />
           )}/>
-        <Route path="/category/:name" render={(props) => (
+        <Route exact path="/:name" render={(props) => (
           <ListPosts
             categories={this.props.categories}
             posts={this.props.posts}
@@ -130,7 +130,7 @@ class App extends Component {
           }}
           />
         )}/>
-        <Route path="/posts/:id" render={(props) => (
+        <Route path="/:category/:id" render={(props) => (
           <PostDetail
             {...props}
             />

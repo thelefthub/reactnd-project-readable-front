@@ -115,7 +115,7 @@ class ListPosts extends Component {
                   this.props.categories.map((cat) => (
                   <li key={cat.name} className={'list-group-item ' + (this.state.viewChoice === cat.name ? 'list-group-item-secondary' : '')}>
 
-                    <Link to={`/category/${cat.name}`} onClick={(e) => this.onViewChoice(cat.name)}>{cat.name}</Link>
+                    <Link to={`/${cat.name}`} onClick={(e) => this.onViewChoice(cat.name)}>{cat.name}</Link>
                 </li>
                 ))
               }
@@ -150,7 +150,7 @@ class ListPosts extends Component {
                    return filtered;
                  }, []).map((post) => (
                    <tr key={post.id}>
-                     <th scope='row'><Link to={`/posts/${post.id}`}>{post.id}</Link></th>
+                     <th scope='row'><Link to={`/${post.category}/${post.id}`}>{post.id}</Link></th>
                      <td>{formatDate(post.timestamp)}</td>
                      <td>{post.title}</td>
                      <td>{post.author}</td>
