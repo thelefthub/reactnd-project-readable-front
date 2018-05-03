@@ -6,6 +6,7 @@ import ListPosts from './components/listPosts';
 import Category from './components/category';
 import CreatePost from './components/createPost';
 import PostDetail from './components/postDetail';
+import NavBar from './components/navBar';
 import * as Api from './utils/api';
 import { connect } from 'react-redux';
 import { loadCategories, loadPosts, addPost, deletePost, castPostVote, updatePost, orderPost } from './actions';
@@ -16,10 +17,8 @@ import sortBy from 'sort-by';
 class App extends Component {
 
   state = {
-    // posts : [],
-    // comments : [],
-    // categories : []
-    sortChoice : 'id'
+    sortChoice : 'id',
+    viewChoice: 'home'
   }
 
   componentDidMount() {
@@ -33,19 +32,11 @@ class App extends Component {
     Api.getPosts().then((posts) => {
       this.props.loadPosts(posts);
     });
-
-    // //get available comments
-    // Api.getComments().then((comments) => {
-    //   this.props.loadComments(comments);
-    // });
-
-
   }
 
   // create a new post
   createPost(id, timestamp, title, body, author, category) {
     console.log('onCreate', id, timestamp, title, body, author, category);
-    // Api.test(id, timestamp, title, body, author, category);
     Api.addPost(id, timestamp, title, body, author, category).then((post) => {
       // console.log('res ',post);
       this.props.addPost(post);
@@ -86,11 +77,7 @@ class App extends Component {
 
   //order posts on user preference
   onSort = (value) => {
-    
     this.props.orderPost(value);
-    // this.props.posts.sort(sortBy('id'));
-
-    console.log('posts order', this.props.order);
   }
 
 
@@ -98,6 +85,17 @@ class App extends Component {
 
     return (
       <div className="App">
+        
+        {/* <Route path="/" render={() => (
+          <NavBar 
+          categories={this.props.categories}
+          onViewChoice={this.onViewChoice}></NavBar>
+        )}/> */}
+        <NavBar 
+          categories={this.props.categories}
+          // onViewChoice={this.onViewChoice}
+          >
+        </NavBar>
         <Route exact path="/" render={(props) => (
           <ListPosts
             categories={this.props.categories}
@@ -109,7 +107,7 @@ class App extends Component {
             {...props}
             />
           )}/>
-        <Route exact path="/category/:name" render={(props) => (
+        <Route path="/category/:name" render={(props) => (
           <ListPosts
             categories={this.props.categories}
             posts={this.props.posts}
@@ -117,6 +115,7 @@ class App extends Component {
             castPostVote={this.castPostVote}
             handleSubmit={this.handleSubmit}
             onSort={this.onSort}
+            // choice={this.state.viewChoice}
             {...props}
 
             />

@@ -25,10 +25,6 @@ class PostDetail extends Component {
       }
 
       componentDidMount() {
-
-        console.log('param: ', this.props.match.params.id);
-        
-
         // get post detail
         Api.getPost(this.props.match.params.id).then((post) => {
             this.props.loadSinglePost(post);
@@ -40,10 +36,9 @@ class PostDetail extends Component {
         // get available comments
         Api.getComments(this.props.match.params.id).then((comments) => {
         this.props.loadComments(comments, this.props.match.params.id);
-        // console.log('comments ', this.props.comments);
         });
 
-        }
+      }
 
       // update an existing post
       handleSubmit = (e) => {
@@ -278,7 +273,6 @@ class PostDetail extends Component {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-    //   categories: state.categories,
       post  : state.posts.filter((post) => post.id === ownProps.match.params.id)[0],
       comments : state.comments.filter((comment) => comment.parentId === ownProps.match.params.id).sort(sortBy('timestamp'))
   
@@ -304,6 +298,4 @@ const mapStateToProps = (state, ownProps) => {
     mapStateToProps,
     mapDispatchToProps
   )(PostDetail)
-
-// export default PostDetail;
 

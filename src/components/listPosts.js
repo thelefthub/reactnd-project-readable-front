@@ -24,7 +24,6 @@ class ListPosts extends Component {
 
   componentDidMount() {
     //set state according to view preference
-    console.log('link:', this.props.match);
     let param = 'home';
     switch (this.props.match.params.name) {
       case 'react':
@@ -40,41 +39,27 @@ class ListPosts extends Component {
     this.setState({ viewChoice: param }, () => {
       console.log('after updates ', this.state.viewChoice);
     });
+  }
 
-    console.log('posts: ', this.props.posts);
+  componentDidUpdate() {
+    console.log('update: ', this.props.match.params.name);
     
-
-
+    if (this.props.match.params.name !== this.state.viewChoice && this.props.match.params.name != null) {
+      this.setState({ viewChoice: this.props.match.params.name });
+    }
+    
   }
 
   //set state according to view preference (when clicking link)
   onViewChoice = (choice) => {
     this.setState({ viewChoice: choice }, () => {
       console.log('after link ', this.state.viewChoice);
-      // let filtered = this.props.posts.filter(post => post.category === choice);
-      // this.setState(() => ({ posts: filtered }))
     });
   }
-
-  // //order posts on user preference
-  // onSort2 = (e) => {
-  //   console.log('response ', e.target.value);
-  //   this.setState({sortChoice : e.target.value});
-  //   this.props.posts.sort(sortBy(e.target.value))
-  //   // console.log('sorted ', this.props.posts);
-  // }
-
-  // //order posts on user preference
-  // onSort = (value) => {
-  //   this.setState({sortChoice : value});
-  //   this.props.posts.sort(sortBy(value));
-  //   // console.log('sorted ', this.props.posts);
-  // }
 
   //order posts on user preference
   onSort = (value) => {
     this.props.onSort(value);
-    // console.log('sorted ', this.props.posts);
   }
 
   openModal = (id, title, body) => {
@@ -109,9 +94,8 @@ class ListPosts extends Component {
 
     return (
       <div className='container-fluid'>
-        <h1>MyPosts</h1>
         <div className='row'>
-          <div className='col-2'>
+          {/* <div className='col-2'>
             <h2>Categories</h2>
               <ol className='list-group'>
                 {
@@ -119,11 +103,11 @@ class ListPosts extends Component {
                   <li key={cat.name} className={'list-group-item ' + (this.state.viewChoice === cat.name ? 'list-group-item-secondary' : '')}>
 
                     <Link to={`/category/${cat.name}`} onClick={(e) => this.onViewChoice(cat.name)}>{cat.name}</Link>
-                </li>
+                 </li>
                 ))
               }
               </ol>
-          </div>
+          </div> */}
           <div className='col-10'>
             <h2>Posts</h2>
             <table className='table'>
@@ -165,15 +149,6 @@ class ListPosts extends Component {
                      <td onClick={() => this.props.deletePost(post.id)}><i className="fa fa-trash" aria-hidden="true"></i></td>
                    </tr>
                ))
-
-                /* this.props.posts.map((post) => (
-                    <tr key={post.id}>
-                      <th scope='row'>{post.id}</th>
-                      <td>{formatDate(post.timestamp)}</td>
-                      <td>{post.title}</td>
-                      <td>@{post.author}</td>
-                    </tr>
-                )) */
               }
               </tbody>
             </table>
